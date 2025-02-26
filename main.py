@@ -26,4 +26,9 @@ def cliente():
 def produto():
     return produtos
 
-@app.route("/ordem_de_venda")
+@app.route("/ordem_de_venda", methods=["get"])
+def ordem_de_venda():
+    return ordem_de_venda
+
+
+ 
