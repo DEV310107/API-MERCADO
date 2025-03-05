@@ -1,108 +1,208 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 import csv
 
 app = Flask(__name__)
-
-clientes = [["id", "nome", "sobrenome", "data-de-nascimento", "cpf"]]
-produtos = [["id", "nome", "fornecedor", "quantidade"]]
-ordens_de_venda = [["id", "cliente", "produto"]]
-
-
-with open("clientes.csv", "w", newline="", encoding="utf-8") as arquivo:
-    escritor = csv.writer(arquivo)
-    escritor.writerows(clientes)
-
-with open("produtos.csv", "w", newline="", encoding="utf-8") as arquivo:
-    escritor = csv.writer(arquivo)
-    escritor.writerows(produtos)
-
-with open("ordem_de_venda.csv", "w", newline="", encoding="utf-8") as arquivo:
-    escritor = csv.writer(arquivo)
-    escritor.writerows(ordens_de_venda)
-
+ids = 0
 
 @app.route("/clientes", methods=["GET"])
-def listar_clientes():
-    return jsonify(clientes)
+def cliente():
+    try:
+        file_path = 'Clientes.csv'
+        clientes = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                clientes.append(row)
+        return jsonify(clientes), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
+@app.route("/ordensdevenda", methods=["GET"])
+def ordens():
+    try:
+        file_path = 'OrdensDeVenda.csv'
+        ordens = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                ordens.append(row)
+        return jsonify(ordens), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 @app.route("/produtos", methods=["GET"])
-def listar_produtos():
-    return jsonify(produtos)
-
-@app.route("/ordens_de_venda", methods=["GET"])
-def listar_ordens_de_venda():
-    return jsonify(ordens_de_venda)
-
-
-@app.route("/add_cliente", methods=["POST"])
-def add_cliente():
-    data = request.get_json()
-    clientes[f"{len(clientes) + 1}"] = data
-    return jsonify(clientes), 200
-
-@app.route("/add_produto", methods=["POST"])
-def add_produto():
-    data = request.get_json()
-    produtos[f"{len(produtos) + 1}"] = data
-    return jsonify(produtos), 200
-
-@app.route("/add_ordem_de_venda", methods=["POST"])
-def add_ordem_de_venda():
-    data = request.get_json()
-    ordens_de_venda[f"{len(ordens_de_venda) + 1}"] = data
-    return jsonify(ordens_de_venda),200
-
-@app.route("/update_cliente", methods=["PUT"])
-def update_cliente():
-    data = request.get_json()
-    if data["id"] in clientes:
-        for chave, valor in data.items():
-            if chave != "id":
-                clientes[data["id"]][chave] = valor
-        return jsonify(clientes), 200
-    else:
-        return jsonify({"erro": "Cliente não encontrado"}), 404
-
-@app.route("/update_produto", methods=["PUT"])
-def update_produto():
-    data = request.get_json()
-    if data["id"] in produtos:
-        for chave, valor in data.items():
-            if chave != "id":
-                produtos[data["id"]][chave] = valor
+def produtos():
+    try:
+        file_path = 'Produtos.csv'
+        produtos = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                produtos.append(row)
         return jsonify(produtos), 200
-    else:
-        return jsonify({"erro": "Produto não encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
-@app.route("/update_ordem_de_venda", methods=["PUT"])
-def update_ordem_de_venda():
-    data = request.get_json()
-    if data["id"] in ordens_de_venda:
-        for chave, valor in data.items():
-            if chave != "id":
-                ordens_de_venda[data["id"]][chave] = valor
-        return jsonify(ordens_de_venda), 200
-    else:
-        return jsonify({"erro": "Ordem de venda não encontrada"}), 404
+@app.route("/add_cliente", methods=["post"])
+def add_cliente():
+    try:
+        data = request.get_json()
+        global ids
+        ids += 1
+        cliente = [ids, data["nome"], data["sobrenome"], data["data de nascimento"], data["cpf"]]
+        file_path = 'Clientes.csv'
+        with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(cliente)
+        return jsonify({"message": "Cliente adicionado!", "cliente": cliente}), 200
+    except Exception as e:
+        return jsonify({"Error"}), 404
+
+@app.route("/add_produto", methods=["post"])
+def add_produto():
+    try:
+        global ids
+        ids += 1
+        data = request.get_json()
+        produto = [ids, data["nome"], data["fornecedor"], data["quantidade"]]
+        file_path = 'Produtos.csv'
+        with open(file_path, mode='a', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerow(produto)
+        return jsonify({"message": "Produto adicionado!", "produto": produto}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/add_ordemdevenda", methods=["post"])
+def add_ordemdevenda():
+    try:
+        data = request.get_json()
+        ordem = [ids, data["cliente_id"], data["produto_id"]]
+        file_path = 'OrdensDeVenda.csv'
+        with open(file_path, mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(ordem)
+        return jsonify({"message": "Ordem de venda adicionada!", "ordem": ordem}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
+@app.route("/up_cliente", methods=["put"])
+def up_cliente():
+    try:
+        rows = []
+        data = request.get_json()
+        cliente_id = data["cliente_id"]
+        file_path = 'Clientes.csv'
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if linha[0] == cliente_id:
+                    linha[1] = data.get("nome", linha[1])
+                    linha[2] = data.get("sobrenome", linha[2])
+                    linha[3] = data.get("data de nascimento", linha[3])
+                    linha[4] = data.get("cpf", linha[4])
+                rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Cliente atualizado!"}), 200
+    except Exception as e:
+        return jsonify({"error"}), 404
 
-@app.route("/delete_cliente/<int:id>", methods=["DELETE"])
+@app.route("/up_produto", methods=["put"])
+def up_produto():
+    try:
+        rows = []
+        data = request.get_json()
+        produto_id = data["produto_id"]
+        file_path = 'Produtos.csv'
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if linha[0] == produto_id:
+                    linha[1] = data.get("nome", linha[1])
+                    linha[2] = data.get("fornecedor", linha[2])
+                    linha[3] = data.get("quantidade", linha[3])
+                rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Produto atualizado!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
+@app.route("/up_ordemdevenda", methods=["put"])
+def up_ordemdevenda():
+    try:
+        rows = []
+        data = request.get_json()
+        ordem_id = data["ordem_id"]
+        file_path = 'OrdensDeVenda.csv'
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if linha[0] == ordem_id:
+                    linha[1] = data.get("cliente_id", linha[1])
+                    linha[2] = data.get("produto_id", linha[2])
+                rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Ordem de venda atualizada!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
+
+@app.route("/clientes/<int:id>", methods=["DELETE"])
 def delete_cliente(id):
-    global clientes
-    clientes = [linha for linha in clientes if linha[0] != id or linha[0] == "id"]
-    return jsonify({"mensagem": "Cliente removido!"}), 200
+    try:
+        file_path = 'Clientes.csv'
+        rows = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if int(linha[0]) != id:
+                    rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Cliente deletado!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route("/delete_produto/<int:id>", methods=["DELETE"])
+@app.route("/produtos/<int:id>", methods=["DELETE"])
 def delete_produto(id):
-    global produtos
-    produtos = [linha for linha in produtos if linha[0] != id or linha[0] == "id"]
-    return jsonify({"mensagem": "Produto removido!"}), 200
+    try:
+        file_path = 'Produtos.csv'
+        rows = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if int(linha[0]) != id:
+                    rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Produto deletado!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route("/delete_ordem_de_venda/<int:id>", methods=["DELETE"])
-def delete_ordem_de_venda(id):
-    global ordens_de_venda
-    ordens_de_venda = [linha for linha in ordens_de_venda if linha[0] != id or linha[0] == "id"]
-    return jsonify({"mensagem": "Ordem de venda removida!"}), 200
+@app.route("/ordensdevenda/<int:id>", methods=["DELETE"])
+def delete_ordemdevenda(id):
+    try:
+        file_path = 'OrdensDeVenda.csv'
+        rows = []
+        with open(file_path, mode='r', newline='', encoding='utf-8') as arquivo:
+            reader = csv.reader(arquivo)
+            for linha in reader:
+                if int(linha[0]) != id:
+                    rows.append(linha)
+        with open(file_path, mode='w', newline='', encoding='utf-8') as arquivo:
+            writer = csv.writer(arquivo)
+            writer.writerows(rows)
+        return jsonify({"message": "Ordem de venda deletada!"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+                
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
