@@ -1,8 +1,8 @@
-# Documentação API Mercado
+# 🛒 Documentação API Mercado
 
 Para começar deve se abri um ambiente virtual  para utilização do FLASK:
 
-### Criando um ambiente virtual
+### 📱 Criando um ambiente virtual
 
 Para criar um ambiente virtual em Python, use o seguinte comando:
 
@@ -34,9 +34,9 @@ Após ativar o ambiente virtual, você pode instalar pacotes normalmente com pip
 pip install flask
 ```
 
-# BIBLIOTECAS UTILIZADAS:
+# 📖 Biblioteca Utilizadas:
 
-## Biblioteca `jsonify`
+## 🟥 Biblioteca `jsonify`
 
 A função `jsonify` é usada para converter dicionários e listas Python em respostas JSON formatadas corretamente.
 
@@ -50,7 +50,7 @@ def data():
     return jsonify({"message": "Hello, JSON!", "status": 200})
 ```
 
-## Biblioteca `Flask`
+## 🟥 Biblioteca `Flask`
 
 A classe `Flask` é a base do framework e permite criar e gerenciar a aplicação.
 
@@ -62,7 +62,7 @@ app = Flask(__name__)
 
 A partir dessa instância, é possível definir rotas, configurar a aplicação e iniciar o servidor.
 
-## Biblioteca `Request`
+## 🟥 Biblioteca `Request`
 
 A classe `Request` permite acessar dados das requisições HTTP, como parâmetros, cabeçalhos e corpo da requisição.
 
@@ -78,9 +78,9 @@ def login():
     return jsonify({"username": username, "authenticated": True})
 ```
 
-## Métodos HTTP da API
+## 👑 Métodos HTTP da API
 
-### Método GET
+### 🟩 Método GET
 
 Os métodos GET são usados para recuperar informações armazenadas nos arquivos CSV. Nossa API possui três rotas GET:
 
@@ -144,7 +144,7 @@ def produtos():  # Define a função que será executada quando a rota for acess
 
 Essa rota retorna todos os produtos armazenados no arquivo `Produtos.csv`.
 
-### Método POST
+### 🟩 Método POST
 
 O método **POST** é utilizado para enviar dados ao servidor, geralmente para criar novos registros.
 
@@ -209,7 +209,7 @@ Este método adiciona um novo cliente no arquivo `Clientes.csv`. Ele recebe um J
 
 ---
 
-### Método PUT
+### 🟩 Método PUT
 
 O método **PUT** é utilizado para atualizar registros existentes no servidor.
 
@@ -297,7 +297,7 @@ Este método permite atualizar um cliente existente no arquivo `Clientes.csv`. E
 
 ---
 
-### Método DELETE
+### 🟩 Método DELETE
 
 O método **DELETE** é utilizado para remover um registro do servidor.
 
@@ -368,6 +368,8 @@ def delete_ordemdevenda(id):  # Função chamada quando a rota é acessada, com 
 **Explicação**:
 Este método deleta um cliente específico do arquivo `Clientes.csv` com base no ID fornecido na URL. As linhas do arquivo são lidas, e todas as linhas que não correspondem ao cliente a ser deletado são mantidas no arquivo.
 
+```
+
 ```python
 if __name__ == '__main__':  # Verifica se o script está sendo executado diretamente (não importado como módulo).
     app.run(debug=True, host='0.0.0.0')  # Inicia o servidor Flask em modo de depuração (debug) e disponível em todas as interfaces de rede (0.0.0.0).
@@ -378,7 +380,8 @@ if __name__ == '__main__':  # Verifica se o script está sendo executado diretam
 
 Esse trecho de código é responsável por iniciar a aplicação Flask quando o script é executado diretamente. A linha `app.run(debug=True, host='0.0.0.0')` faz o servidor rodar em modo de depuração, o que ajuda a identificar erros facilmente, e configura o Flask para aceitar conexões de qualquer interface de rede (`0.0.0.0`). Isso é útil, por exemplo, para rodar a aplicação em um ambiente de desenvolvimento ou testar localmente.
 
-# Como testar os métodos GET no Postman
+
+# 💻 Como testar os métodos GET no Postman
 
 1. Abra o Postman.
 2. Selecione o método **GET**.
@@ -388,7 +391,7 @@ Esse trecho de código é responsável por iniciar a aplicação Flask quando o 
     - `http://127.0.0.1:5000/produtos` para listar produtos.
 4. Clique em **Send** e veja a resposta JSON.
 
-### Como testar os métodos POST, PUT e DELETE no Postman
+### 🖱️ Como testar os métodos POST, PUT e DELETE no Postman
 
 - **POST**:
     1. Escolha o método **POST**.
