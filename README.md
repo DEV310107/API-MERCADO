@@ -1,210 +1,127 @@
-﻿# API-MERCADO
- <!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentação da API - Sistema de Gestão</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        h3 {
-            color: #555;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-        }
-        code {
-            color: #d6336c;
-            font-weight: bold;
-        }
-        .endpoint {
-            margin-bottom: 20px;
-        }
-        .endpoint h3 {
-            margin-top: 10px;
-        }
-    </style>
+    <title>Documentação sobre Flask e Ambiente Virtual</title>
 </head>
 <body>
+    <h1>Introdução ao Flask</h1>
+    <p>Flask é um microframework para a linguagem Python que facilita a criação de aplicações web.</p>
 
-    <h1>Documentação da API - Sistema de Gestão</h1>
+    <h2>Instalação</h2>
+    <p>Para instalar o Flask precisa ativar um ambiente virtual, use os seguintes comandos para a ativação:</p>
 
-    <p>Esta documentação descreve a API para um sistema de gestão de clientes, produtos e ordens de venda, desenvolvida com Flask e utilizando arquivos CSV para armazenamento.</p>
+    <h3>Criando um ambiente virtual</h3>
+    <p>Para criar um ambiente virtual em Python, use o seguinte comando:</p>
+    <pre><code>python -m venv venv</code></pre>
+    <p>Isso criará uma pasta chamada venv com todos os arquivos necessários.</p>
 
-    <h2>Endpoints da API</h2>
+    <h3>Ativando o ambiente virtual</h3>
+    <p>Windows (PowerShell):</p>
+    <pre><code>.\venv\Scripts\Activate.ps1</code></pre>
+    <p>Se ocorrer um erro, talvez seja necessário modificar a permissão de execução de scripts:</p>
+    <pre><code>Set-ExecutionPolicy RemoteSigned</code></pre>
 
-    <div class="endpoint">
-        <h3>GET /clientes</h3>
-        <p>Retorna todos os clientes armazenados no arquivo <code>Clientes.csv</code>.</p>
-        <pre><code>GET /clientes</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>[
-    [1, "João", "Silva", "1990-01-01", "12345678900"],
-    [2, "Maria", "Oliveira", "1985-05-10", "98765432100"]
-]</code></pre>
-    </div>
+    <h3>Instalando pacotes dentro do venv</h3>
+    <p>Após ativar o ambiente virtual, você pode instalar pacotes normalmente com pip:</p>
+    <pre><code>pip install flask</code></pre>
 
-    <div class="endpoint">
-        <h3>GET /ordensdevenda</h3>
-        <p>Retorna todas as ordens de venda armazenadas no arquivo <code>OrdensDeVenda.csv</code>.</p>
-        <pre><code>GET /ordensdevenda</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>[
-    [1, 1, 2],
-    [2, 2, 3]
-]</code></pre>
-    </div>
+    <h2>Biblioteca jsonify</h2>
+    <p>A função jsonify é usada para converter dicionários e listas Python em respostas JSON formatadas corretamente.</p>
+    <h3>Exemplo de Uso</h3>
+    <pre><code>from flask import jsonify
 
-    <div class="endpoint">
-        <h3>GET /produtos</h3>
-        <p>Retorna todos os produtos armazenados no arquivo <code>Produtos.csv</code>.</p>
-        <pre><code>GET /produtos</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>[
-    [1, "Produto A", "Fornecedor X", 10],
-    [2, "Produto B", "Fornecedor Y", 20]
-]</code></pre>
-    </div>
+@app.route('/data')
+def data():
+    return jsonify({"message": "Hello, JSON!", "status": 200})</code></pre>
 
-    <div class="endpoint">
-        <h3>POST /add_cliente</h3>
-        <p>Adiciona um novo cliente. A requisição deve enviar um JSON com as informações do cliente.</p>
-        <pre><code>POST /add_cliente</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "nome": "Carlos",
-    "sobrenome": "Souza",
-    "data de nascimento": "1982-03-15",
-    "cpf": "11223344556"
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Cliente adicionado!",
-    "cliente": [3, "Carlos", "Souza", "1982-03-15", "11223344556"]
-}</code></pre>
-    </div>
+    <h2>Biblioteca Flask</h2>
+    <p>A classe Flask é a base do framework e permite criar e gerenciar a aplicação.</p>
+    <h3>Exemplo de Uso</h3>
+    <pre><code>app = Flask(__name__)</code></pre>
+    <p>A partir dessa instância, é possível definir rotas, configurar a aplicação e iniciar o servidor.</p>
 
-    <div class="endpoint">
-        <h3>POST /add_produto</h3>
-        <p>Adiciona um novo produto. A requisição deve enviar um JSON com as informações do produto.</p>
-        <pre><code>POST /add_produto</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "nome": "Produto C",
-    "fornecedor": "Fornecedor Z",
-    "quantidade": 50
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Produto adicionado!",
-    "produto": [3, "Produto C", "Fornecedor Z", 50]
-}</code></pre>
-    </div>
+    <h2>Biblioteca Request</h2>
+    <p>A classe Request permite acessar dados das requisições HTTP, como parâmetros, cabeçalhos e corpo da requisição.</p>
+    <h3>Exemplo de Uso</h3>
+    <pre><code>from flask import request, jsonify
 
-    <div class="endpoint">
-        <h3>POST /add_ordemdevenda</h3>
-        <p>Adiciona uma nova ordem de venda. A requisição deve enviar um JSON com as informações da ordem.</p>
-        <pre><code>POST /add_ordemdevenda</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "cliente_id": 1,
-    "produto_id": 2
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Ordem de venda adicionada!",
-    "ordem": [3, 1, 2]
-}</code></pre>
-    </div>
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    return jsonify({"username": username, "authenticated": True})</code></pre>
 
-    <div class="endpoint">
-        <h3>PUT /up_cliente</h3>
-        <p>Atualiza as informações de um cliente. A requisição deve enviar um JSON com o ID do cliente e os dados a serem atualizados.</p>
-        <pre><code>PUT /up_cliente</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "cliente_id": 1,
-    "nome": "João Pedro"
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Cliente atualizado!"
-}</code></pre>
-    </div>
+    <h2>MÉTODO GET</h2>
 
-    <div class="endpoint">
-        <h3>PUT /up_produto</h3>
-        <p>Atualiza as informações de um produto. A requisição deve enviar um JSON com o ID do produto e os dados a serem atualizados.</p>
-        <pre><code>PUT /up_produto</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "produto_id": 1,
-    "quantidade": 15
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Produto atualizado!"
-}</code></pre>
-    </div>
+    <h3>Rota /clientes (GET)</h3>
+    <p>Retorna a lista de clientes cadastrados no arquivo Clientes.csv.</p>
+    <h4>Exemplo de Uso:</h4>
+    <pre><code>@app.route("/clientes", methods=["GET"])
+def cliente():
+    try:
+        file_path = 'Clientes.csv'
+        clientes = []
+        # Abre o arquivo CSV e lê seus dados
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                clientes.append(row)  # Adiciona cada linha do CSV à lista
+        return jsonify(clientes), 200  # Retorna a lista em formato JSON
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404  # Retorna erro caso ocorra uma exceção</code></pre>
 
-    <div class="endpoint">
-        <h3>PUT /up_ordemdevenda</h3>
-        <p>Atualiza as informações de uma ordem de venda. A requisição deve enviar um JSON com o ID da ordem e os dados a serem atualizados.</p>
-        <pre><code>PUT /up_ordemdevenda</code></pre>
-        <h4>Corpo da requisição:</h4>
-        <pre><code>{
-    "ordem_id": 1,
-    "cliente_id": 2
-}</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Ordem de venda atualizada!"
-}</code></pre>
-    </div>
+    <h3>Rota /ordensdevenda (GET)</h3>
+    <p>Retorna a lista de ordens de venda cadastradas no arquivo OrdensDeVenda.csv.</p>
+    <h4>Exemplo de Uso:</h4>
+    <pre><code>@app.route("/ordensdevenda", methods=["GET"])
+def ordens():
+    try:
+        file_path = 'OrdensDeVenda.csv'
+        ordens = []
+        # Abre o arquivo CSV e lê seus dados
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                ordens.append(row)  # Adiciona cada linha do CSV à lista
+        return jsonify(ordens), 200  # Retorna a lista em formato JSON
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404  # Retorna erro caso ocorra uma exceção</code></pre>
 
-    <div class="endpoint">
-        <h3>DELETE /clientes/{id}</h3>
-        <p>Deleta um cliente baseado no ID. A requisição deve enviar o ID do cliente na URL.</p>
-        <pre><code>DELETE /clientes/1</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Cliente deletado!"
-}</code></pre>
-    </div>
+    <h3>Rota /produtos (GET)</h3>
+    <p>Retorna a lista de produtos cadastrados no arquivo Produtos.csv.</p>
+    <h4>Exemplo de Uso:</h4>
+    <pre><code>@app.route("/produtos", methods=["GET"])
+def produtos():
+    try:
+        file_path = 'Produtos.csv'
+        produtos = []
+        # Abre o arquivo CSV e lê seus dados
+        with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                produtos.append(row)  # Adiciona cada linha do CSV à lista
+        return jsonify(produtos), 200  # Retorna a lista em formato JSON
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404  # Retorna erro caso ocorra uma exceção</code></pre>
 
-    <div class="endpoint">
-        <h3>DELETE /produtos/{id}</h3>
-        <p>Deleta um produto baseado no ID. A requisição deve enviar o ID do produto na URL.</p>
-        <pre><code>DELETE /produtos/1</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Produto deletado!"
-}</code></pre>
-    </div>
+    <h2>Explicação</h2>
+    <p>Cada uma dessas rotas:</p>
+    <ul>
+        <li>Lê os dados de um arquivo CSV específico (Clientes.csv, OrdensDeVenda.csv, Produtos.csv).</li>
+        <li>Converte os dados em uma lista e retorna no formato JSON.</li>
+        <li>Maneja exceções caso o arquivo não seja encontrado ou ocorra algum erro na leitura.</li>
+    </ul>
 
-    <div class="endpoint">
-        <h3>DELETE /ordensdevenda/{id}</h3>
-        <p>Deleta uma ordem de venda baseada no ID. A requisição deve enviar o ID da ordem de venda na URL.</p>
-        <pre><code>DELETE /ordensdevenda/1</code></pre>
-        <h4>Resposta:</h4>
-        <pre><code>{
-    "message": "Ordem de venda deletada!"
-}</code></pre>
-    </div>
-
-    <h2>Erros Comuns</h2>
-    <p>Todos os endpoints retornam um erro com o status 500 ou 404 se algo der errado. A resposta de erro inclui uma mensagem com detalhes sobre o problema.</p>
-
+    <h2>Comentários sobre o código</h2>
+    <ul>
+        <li><strong>try-except:</strong> Utilizado para capturar possíveis erros durante a leitura do arquivo.</li>
+        <li><strong>open(file_path, mode='r', newline='', encoding='utf-8'):</strong> Abre o arquivo CSV no modo de leitura, garantindo a compatibilidade com caracteres especiais.</li>
+        <li><strong>csv.reader(file):</strong> Permite a leitura do arquivo CSV linha por linha.</li>
+        <li><strong>jsonify(lista):</strong> Retorna os dados convertidos para JSON, garantindo que sejam acessíveis via API.</li>
+        <li><strong>return jsonify(data), 200:</strong> Retorna os dados e o código HTTP 200 (OK) quando a requisição for bem-sucedida.</li>
+        <li><strong>return jsonify({"error": str(e)}), 404:</strong> Retorna um erro e código HTTP 404 caso o arquivo não seja encontrado ou ocorra outro problema.</li>
+    </ul>
 </body>
 </html>
-
